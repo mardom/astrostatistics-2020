@@ -2,15 +2,15 @@
 
 Class notebooks of a course following http://www.astroml.org/index.html and http://fab.cba.mit.edu/classes/864.20/index.html
 
-class1: 26/08/20 Lecture-1-Introduction-to-Python-Programming.ipynb & ppt
-class2: 28/08/20 
-class3: 02/09/20
+class1: 26/08/20 Astrometry 2020-clase-1.pptx
+class2: 28/08/20 Lecture-1-Introduction-to-Python-Programming.ipynb 
+class3: 02/09/20 AstroStatistics 2020 C03.pptx
 class4: 04/09/20 Astrostatistics_C04.ipynb
-class5: 09/09/20 Astrostatistics-C05.ipynb
-class6: 11/09/20 
+class5: 09/09/20
+class6: 11/09/20 Astrostatistics-C05.ipynb
 class7: 16/09/20 
 class8: 18/09/20 MLE.ipynb
-class9: 30/09/20 SanJeronimo.ipynb
+class9: 30/09/20 SanJeronimo
 class10: 02/10/20 ClassEstim.ipynb
 class11: 07/10/20 HypothesisTesting.ipynb
 class12: 09/10/20 BayesStatisticalInference.ipynb
