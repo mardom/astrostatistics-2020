@@ -1,0 +1,21 @@
+star_name,ra_deg,dec_deg,v_mag,b_v_color,parallax_mas,spectral_type,constellation
+Sirius,101.287,-16.716,-1.46,0.0,379.21,A1V,Canis Major
+Canopus,95.988,-52.696,-0.74,0.15,10.43,A9II,Carina
+Alpha Centauri,219.902,-60.834,-0.27,0.71,747.23,G2V,Centaurus
+Arcturus,213.915,19.182,-0.05,1.23,88.83,K1.5III,Bootes
+Vega,279.235,38.784,0.03,0.0,130.23,A0Va,Lyra
+Capella,79.172,45.998,0.08,0.8,76.2,G3III,Auriga
+Rigel,78.634,-8.202,0.13,-0.03,3.78,B8Ia,Orion
+Procyon,114.825,5.225,0.38,0.42,285.93,F5IV-V,Canis Minor
+Betelgeuse,88.793,7.407,0.5,1.85,4.51,M1-M2Ia-ab,Orion
+Achernar,24.429,-57.237,0.46,-0.16,23.38,B6Vep,Eridanus
+Hadar,210.956,-60.373,0.61,-0.23,8.32,B1III,Centaurus
+Altair,297.696,8.868,0.77,0.22,194.95,A7V,Aquila
+Aldebaran,68.98,16.509,0.85,1.54,50.09,K5III,Taurus
+Spica,201.298,-11.161,0.98,-0.24,13.06,B1III-IV,Virgo
+Antares,247.352,-26.432,1.06,1.83,5.89,M1.5Iab-Ib,Scorpius
+Pollux,116.329,28.026,1.14,1.0,96.54,K0III,Gemini
+Fomalhaut,344.413,-29.622,1.16,0.09,129.81,A3V,Piscis Austrinus
+Deneb,310.358,45.28,1.25,0.09,2.29,A2Ia,Cygnus
+Mimosa,191.93,-59.689,1.25,-0.23,11.76,B0.5III,Crux
+Regulus,152.093,11.967,1.36,-0.11,41.13,B7V,Leo

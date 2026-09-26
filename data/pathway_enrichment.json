@@ -1,0 +1,58 @@
+[
+  {
+    "pathway_id": "KEGG_04110",
+    "pathway_name": "Cell Cycle",
+    "gene_count": 45,
+    "p_value": 1.4e-06,
+    "adjusted_p_value": 0.00012,
+    "category": "Cellular Processes"
+  },
+  {
+    "pathway_id": "KEGG_04210",
+    "pathway_name": "Apoptosis",
+    "gene_count": 32,
+    "p_value": 3.1e-05,
+    "adjusted_p_value": 0.00085,
+    "category": "Cellular Processes"
+  },
+  {
+    "pathway_id": "KEGG_00010",
+    "pathway_name": "Glycolysis",
+    "gene_count": 18,
+    "p_value": 0.042,
+    "adjusted_p_value": 0.18,
+    "category": "Metabolism"
+  },
+  {
+    "pathway_id": "KEGG_03430",
+    "pathway_name": "Mismatch Repair",
+    "gene_count": 15,
+    "p_value": 0.002,
+    "adjusted_p_value": 0.015,
+    "category": "Genetic Information"
+  },
+  {
+    "pathway_id": "KEGG_04060",
+    "pathway_name": "Cytokine Signaling",
+    "gene_count": 58,
+    "p_value": 2.5e-08,
+    "adjusted_p_value": 4.1e-06,
+    "category": "Immune System"
+  },
+  {
+    "pathway_id": "KEGG_04151",
+    "pathway_name": "PI3K-Akt Signaling",
+    "gene_count": 64,
+    "p_value": 8.7e-07,
+    "adjusted_p_value": 3.5e-05,
+    "category": "Signal Transduction"
+  },
+  {
+    "pathway_id": "KEGG_00190",
+    "pathway_name": "Oxidative Phosphorylation",
+    "gene_count": 22,
+    "p_value": 0.065,
+    "adjusted_p_value": 0.22,
+    "category": "Metabolism"
+  }
+]

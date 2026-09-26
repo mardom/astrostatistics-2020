@@ -1,0 +1,122 @@
+[
+  {
+    "gene_id": "ENSG00000141510",
+    "symbol": "TP53",
+    "base_mean": 1420.5,
+    "log2_fold_change": -2.15,
+    "p_value": 1.2e-06,
+    "adj_p_value": 3.4e-05,
+    "chromosome": "chr17",
+    "pathway": "Apoptosis"
+  },
+  {
+    "gene_id": "ENSG00000012048",
+    "symbol": "BRCA1",
+    "base_mean": 830.2,
+    "log2_fold_change": -1.82,
+    "p_value": 4.5e-05,
+    "adj_p_value": 0.00089,
+    "chromosome": "chr17",
+    "pathway": "DNA Repair"
+  },
+  {
+    "gene_id": "ENSG00000146648",
+    "symbol": "EGFR",
+    "base_mean": 3240.8,
+    "log2_fold_change": 3.45,
+    "p_value": 2.1e-12,
+    "adj_p_value": 1.5e-10,
+    "chromosome": "chr7",
+    "pathway": "Cell Proliferation"
+  },
+  {
+    "gene_id": "ENSG00000136997",
+    "symbol": "MYC",
+    "base_mean": 5120.0,
+    "log2_fold_change": 2.78,
+    "p_value": 8.4e-09,
+    "adj_p_value": 2.1e-07,
+    "chromosome": "chr8",
+    "pathway": "Cell Proliferation"
+  },
+  {
+    "gene_id": "ENSG00000112715",
+    "symbol": "VEGFA",
+    "base_mean": 2450.1,
+    "log2_fold_change": 1.95,
+    "p_value": 0.00033,
+    "adj_p_value": 0.0042,
+    "chromosome": "chr6",
+    "pathway": "Angiogenesis"
+  },
+  {
+    "gene_id": "ENSG00000136244",
+    "symbol": "IL6",
+    "base_mean": 680.4,
+    "log2_fold_change": 4.12,
+    "p_value": 1.1e-15,
+    "adj_p_value": 9.8e-14,
+    "chromosome": "chr7",
+    "pathway": "Immune Response"
+  },
+  {
+    "gene_id": "ENSG00000171862",
+    "symbol": "PTEN",
+    "base_mean": 1890.6,
+    "log2_fold_change": -2.6,
+    "p_value": 5.6e-08,
+    "adj_p_value": 9.4e-07,
+    "chromosome": "chr10",
+    "pathway": "Tumor Suppression"
+  },
+  {
+    "gene_id": "ENSG00000111640",
+    "symbol": "GAPDH",
+    "base_mean": 15400.0,
+    "log2_fold_change": 0.05,
+    "p_value": 0.72,
+    "adj_p_value": 0.85,
+    "chromosome": "chr12",
+    "pathway": "Metabolism"
+  },
+  {
+    "gene_id": "ENSG00000075624",
+    "symbol": "ACTB",
+    "base_mean": 18200.0,
+    "log2_fold_change": -0.08,
+    "p_value": 0.58,
+    "adj_p_value": 0.76,
+    "chromosome": "chr7",
+    "pathway": "Cytoskeleton"
+  },
+  {
+    "gene_id": "ENSG00000142192",
+    "symbol": "APP",
+    "base_mean": 950.0,
+    "log2_fold_change": 0.42,
+    "p_value": 0.12,
+    "adj_p_value": 0.25,
+    "chromosome": "chr21",
+    "pathway": "Neurogenesis"
+  },
+  {
+    "gene_id": "ENSG00000130203",
+    "symbol": "APOE",
+    "base_mean": 1200.4,
+    "log2_fold_change": 1.35,
+    "p_value": 0.008,
+    "adj_p_value": 0.045,
+    "chromosome": "chr19",
+    "pathway": "Lipid Metabolism"
+  },
+  {
+    "gene_id": "ENSG00000026025",
+    "symbol": "VIM",
+    "base_mean": 4100.2,
+    "log2_fold_change": 2.3,
+    "p_value": 7.8e-07,
+    "adj_p_value": 1.6e-05,
+    "chromosome": "chr10",
+    "pathway": "EMT Transition"
+  }
+]

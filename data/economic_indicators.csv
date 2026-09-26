@@ -1,0 +1,16 @@
+country,iso_code,continent,gdp_nominal_billion_usd,population_million,inflation_rate_pct,unemployment_rate_pct,debt_to_gdp_pct
+United States,USA,North America,26950,335.0,3.4,3.7,122.3
+China,CHN,Asia,17700,1410.0,0.3,5.2,77.0
+Germany,DEU,Europe,4430,84.4,3.2,3.1,66.1
+Japan,JPN,Asia,4210,124.5,2.6,2.5,261.3
+India,IND,Asia,3730,1428.0,5.5,7.1,81.9
+United Kingdom,GBR,Europe,3330,67.7,4.0,4.2,101.1
+France,FRA,Europe,3050,68.0,3.7,7.3,110.6
+Brazil,BRA,South America,2170,215.3,4.6,7.8,74.4
+Canada,CAN,North America,2140,40.1,3.1,5.4,106.4
+Chile,CHL,South America,340,19.6,3.9,8.5,38.0
+Australia,AUS,Oceania,1710,26.5,4.1,3.9,55.7
+South Korea,KOR,Asia,1710,51.7,3.2,2.8,54.3
+Mexico,MEX,North America,1810,128.5,4.7,2.8,49.7
+South Africa,ZAF,Africa,380,60.4,5.4,32.1,73.7
+Argentina,ARG,South America,620,46.0,211.4,6.2,89.5
