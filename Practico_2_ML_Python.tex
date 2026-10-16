@@ -1,0 +1,588 @@
+\documentclass[11pt,a4paper]{article}
+
+% --- PAQUETES FUNDAMENTALES ---
+\usepackage[utf8]{inputenc}
+\usepackage[spanish, provide=*]{babel}
+\renewcommand{\tablename}{Tabla}
+\usepackage[margin=2.2cm,top=2.5cm,bottom=2.5cm]{geometry}
+\usepackage{amsmath,amssymb,amsfonts,bm}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{multirow}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{microtype}
+\usepackage{listings}
+\usepackage[most]{tcolorbox}
+\usepackage{caption}
+\usepackage{subcaption}
+
+% --- PALETA DE COLORES PROFESIONAL ---
+\definecolor{NavyMain}{RGB}{16, 44, 87}
+\definecolor{BlueAccent}{RGB}{53, 101, 169}
+\definecolor{LightBlueBg}{RGB}{240, 244, 250}
+\definecolor{GoldAccent}{RGB}{197, 143, 39}
+\definecolor{DarkSlate}{RGB}{33, 37, 41}
+\definecolor{LightGrayBg}{RGB}{248, 249, 250}
+\definecolor{BorderGray}{RGB}{210, 215, 222}
+\definecolor{CodeGreen}{RGB}{40, 140, 70}
+\definecolor{CodeBlue}{RGB}{20, 80, 160}
+\definecolor{CodePurple}{RGB}{120, 40, 140}
+\definecolor{AlertRed}{RGB}{160, 40, 40}
+
+% --- CONFIGURACIÓN DE HYPERREF ---
+\hypersetup{
+    colorlinks=true,
+    linkcolor=BlueAccent,
+    citecolor=NavyMain,
+    urlcolor=BlueAccent,
+    pdftitle={Guía Práctico 2 - Fundamentos de Aprendizaje Autom\'atico con Python.},
+    pdfauthor={Mariano Domínguez - Astroestadística},
+    pdfsubject={Machine Learning y Ciencia de Datos},
+    pdfkeywords={Machine Learning, Pandas, Scikit-Learn, Clustering, Gradient Descent, Cross Validation, MCMC, Inferencia Bayesiana}
+}
+
+% --- TIPOGRAFÍA Y ENCABEZADOS ---
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{DarkSlate}\textbf{FAAP 2026} \textbar\ Práctico N° 2}
+\fancyhead[R]{\small\color{DarkSlate}Flujo Integral de ML \& Inferencia Bayesiana}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.6pt}
+\renewcommand{\footrulewidth}{0.3pt}
+
+% --- FORMATO DE SECCIONES ---
+\titleformat{\section}
+  {\color{NavyMain}\normalfont\Large\bfseries}
+  {\color{NavyMain}\thesection.}{0.8em}{}[\titlerule]
+
+\titleformat{\subsection}
+  {\color{BlueAccent}\normalfont\large\bfseries}
+  {\color{BlueAccent}\thesubsection.}{0.6em}{}
+
+\titleformat{\subsubsection}
+  {\color{DarkSlate}\normalfont\normalsize\bfseries}
+  {\color{DarkSlate}\thesubsubsection.}{0.5em}{}
+
+% --- CAJAS DESTACADAS (TCOLORBOX) ---
+\newtcolorbox{objetivobox}[1][]{
+    enhanced,
+    colback=LightBlueBg,
+    colframe=NavyMain,
+    coltitle=white,
+    fonttitle=\bfseries\sffamily,
+    title={#1},
+    arc=4mm,
+    boxrule=1pt,
+    left=4mm, right=4mm, top=3mm, bottom=3mm,
+    drop shadow=black!10!white
+}
+
+\newtcolorbox{alertbox}[1][]{
+    enhanced,
+    colback=red!5!white,
+    colframe=AlertRed,
+    coltitle=white,
+    fonttitle=\bfseries\sffamily,
+    title={#1},
+    arc=3mm,
+    boxrule=1pt,
+    left=3mm, right=3mm, top=2mm, bottom=2mm
+}
+
+\newtcolorbox{tipbox}[1][]{
+    enhanced,
+    colback=LightGrayBg,
+    colframe=GoldAccent,
+    coltitle=DarkSlate,
+    fonttitle=\bfseries\sffamily,
+    title={#1},
+    arc=3mm,
+    boxrule=1pt,
+    left=3mm, right=3mm, top=2mm, bottom=2mm
+}
+
+\newtcolorbox{fasebox}[1][]{
+    enhanced,
+    colback=white,
+    colframe=BlueAccent,
+    coltitle=white,
+    fonttitle=\large\bfseries\sffamily,
+    title={#1},
+    arc=3mm,
+    boxrule=1.2pt,
+    left=4mm, right=4mm, top=3mm, bottom=3mm,
+    drop shadow=black!12!white
+}
+
+% --- CONFIGURACIÓN DE LISTINGS PARA CÓDIGO PYTHON ---
+\lstset{
+    language=Python,
+    basicstyle=\ttfamily\footnotesize\color{DarkSlate},
+    keywordstyle=\bfseries\color{CodeBlue},
+    commentstyle=\itshape\color{CodeGreen},
+    stringstyle=\color{CodePurple},
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    stepnumber=1,
+    numbersep=8pt,
+    backgroundcolor=\color{LightGrayBg},
+    frame=single,
+    framerule=0.5pt,
+    rulecolor=\color{BorderGray},
+    breaklines=true,
+    breakatwhitespace=true,
+    showstringspaces=false,
+    tabsize=4,
+    xleftmargin=12pt,
+    framexleftmargin=8pt
+}
+
+% --- INICIO DEL DOCUMENTO ---
+\begin{document}
+
+% --- PORTADA / ENCABEZADO PRINCIPAL ---
+\begin{center}
+    {\large\scshape Universidad de La Serena, Chile  \textbar\ FRC 2026}\\[0.2cm]
+    {\color{NavyMain}\rule{\textwidth}{2pt}}\\[0.35cm]
+    {\huge\bfseries\color{NavyMain} Trabajo Práctico N° 2}\\[0.25cm]
+    {\Large\bfseries\color{BlueAccent} Flujo Integral de Machine Learning sobre Datos Tabulares:}\\
+    {\large\itshape Exploración, Curación, Clustering, Regresión con Descenso por el Gradiente,\\
+    Validación Cruzada e Inferencia Bayesiana MCMC}\\[0.35cm]
+    {\color{NavyMain}\rule{\textwidth}{1pt}}\\[0.3cm]
+    \textbf{Profesor Titular:} Dr. Mariano Domínguez \quad\textbar\quad
+    \textbf{Entorno:} Python 3.10+ (Jupyter Notebook)
+\end{center}
+
+\vspace{0.3cm}
+
+\begin{objetivobox}[Objetivos Pedagógicos y Alcance]
+El propósito fundamental de este trabajo práctico es integrar los fundamentos teóricos y metodológicos vistos en clase en un \textbf{flujo de trabajo completo, riguroso y reproducible de Ciencia de Datos y Machine Learning}, aplicado a un problema real perteneciente al área disciplinar o profesional de cada estudiante (Astronomía, Bioinformática, Geofísica, Economía, Finanzas, Medicina, Ingeniería, etc.).
+
+Al finalizar este trabajo práctico, el estudiante será capaz de:
+\begin{enumerate}[leftmargin=*,itemsep=1pt]
+    \item \textbf{Ingestar, explorar y curar} datos tabulares complejos mediante \texttt{pandas}, \texttt{scipy} y \texttt{seaborn}.
+    \item \textbf{Imputar y transformar} variables utilizando \texttt{scikit-learn}, justificando la selección de escaladores y esquemas de imputación según la presencia de valores atípicos y distribuciones subyacentes.
+    \item \textbf{Descubrir patrones latentes} aplicando algoritmos de agrupamiento no supervisado (\textit{Clustering}) e interpretando el significado físico/conceptual de los conglomerados.
+    \item \textbf{Construir modelos predictivos supervisados} con expansión polinomial, optimizando los parámetros mediante \textbf{Descenso por el Gradiente} e investigando el impacto de la tasa de aprendizaje ($\eta$).
+    \item \textbf{Seleccionar la complejidad óptima} del modelo resolviendo el dilema sesgo-varianza (\textit{Bias-Variance Trade-off}) mediante \textbf{Validación Cruzada ($k$-fold CV)}.
+    \item \textbf{Cuantificar la incertidumbre epistémica y observacional} aplicando \textbf{Inferencia Bayesiana} y muestreo estocástico mediante cadenas de Markov Monte Carlo (\textbf{MCMC}), analizando correlaciones y degeneraciones entre parámetros en diagramas de contornos (\textit{corner plots}).
+\end{enumerate}
+\end{objetivobox}
+
+% ==============================================================================
+% SECCIÓN 1: ELECCIÓN DEL DATASET
+% ==============================================================================
+\section{Directrices para la Elección del Dataset}
+\label{sec:dataset}
+
+Cada alumno (o grupo de trabajo, según la modalidad asignada) deberá seleccionar un \textbf{conjunto de datos tabular de su propio dominio profesional o de interés científico}. Para garantizar que el flujo de trabajo propuesto pueda desarrollarse en toda su profundidad, el dataset debe cumplir las siguientes directrices mínimas:
+
+\begin{enumerate}[leftmargin=*,itemsep=3pt]
+    \item \textbf{Volumen y dimensionalidad:} Al menos $N \ge 500$ registros/observaciones y un mínimo de $P \ge 5$ variables numéricas (características continuas o discretas). Se valora positivamente la presencia de variables categóricas que requieran codificación.
+    \item \textbf{Estructura para aprendizaje supervisado:} Debe contener al menos una variable cuantitativa continua que tenga sentido modelar como \textbf{variable dependiente} ($y$) en función de una o más covariables predictoras ($X$).
+    \item \textbf{Realismo y calidad:} El dataset no debe estar previamente higienizado en su totalidad; debe presentar desafíos reales como datos faltantes (\textit{missing values}), valores atípicos (\textit{outliers}), correlaciones significativas o diferentes escalas de medición.
+\end{enumerate}
+
+\begin{tipbox}[Repositorios y Fuentes Sugeridas según Disciplina]
+\begin{itemize}[leftmargin=*,itemsep=2pt]
+    \item \textbf{Astronomía y Ciencias Espaciales:} Catálogos de SDSS (galaxias, cuásares, fotometría/espectroscopía), archivo de exoplanetas de la NASA (\textit{NASA Exoplanet Archive}), catálogos astrométricos de Gaia (DR2/DR3), curvas de luz TESS/Kepler.
+    \item \textbf{Bioinformática, Medicina y Genómica:} Expresión génica (RNA-Seq/Microarrays en NCBI GEO / TCGA), indicadores clínicos de pacientes (UCI Machine Learning Repository, PhysioNet, Kaggle).
+    \item \textbf{Economía, Finanzas y Negocios:} Indicadores macroeconómicos y de deuda (World Bank Open Data, FMI, FRED St. Louis), series financieras de activos y covariables de mercado (Yahoo Finance, Bloomberg Open Data).
+    \item \textbf{Geociencias, Meteorología y Ambiente:} Datos de sensores satelitales (Copernicus, NOAA), estaciones meteorológicas, registros sismológicos de redes geofísicas.
+    \item \textbf{Ingeniería y Procesos:} Mediciones de telemetría de turbinas, degradación de baterías, parámetros de calidad de producción.
+\end{itemize}
+\end{tipbox}
+
+% ==============================================================================
+% SECCIÓN 2: FASE 1 - INGESTA, EDA, CURACIÓN Y PREPROCESAMIENTO
+% ==============================================================================
+\section{Fase 1: Ingesta, Exploración (EDA), Curación y Preprocesamiento}
+\label{sec:fase1}
+
+\begin{fasebox}[Fase 1: Ingesta de Datos, Análisis Exploratorio y Tratamiento con Scikit-Learn]
+El objetivo de esta fase es comprender a fondo la naturaleza matemática y física de los datos, detectar anomalías y preparar una matriz de características limpia y estandarizada.
+\end{fasebox}
+
+\subsection{1.1 Ingesta y Chequeo Estructural}
+\begin{itemize}[leftmargin=*,itemsep=2pt]
+    \item Realice la carga estructurada del archivo (\texttt{.csv}, \texttt{.parquet}, \texttt{.fits} o base relacional) utilizando \texttt{pandas}.
+    \item Inspeccione las dimensiones del DataFrame (\texttt{shape}), los tipos de datos asociados a cada columna (\texttt{dtypes}), y genere un resumen numérico fundamental de posición y dispersión (\texttt{describe()}).
+    \item Convierta variables categóricas o etiquetas de texto a formatos apropiados (ej. \textit{One-Hot Encoding} con \texttt{pd.get\_dummies} o \texttt{OneHotEncoder}, o \textit{Ordinal Encoding}).
+\end{itemize}
+
+\subsection{1.2 Análisis Exploratorio de Datos (EDA) con Seaborn}
+Diseñe visualizaciones científicas auto-contenidas y publicables utilizando \texttt{seaborn} y \texttt{matplotlib}:
+\begin{enumerate}[leftmargin=*,itemsep=3pt]
+    \item \textbf{Distribuciones Univariadas:} Grafique histogramas con estimación de densidad por kernel (\textit{Kernel Density Estimation}, KDE) y diagramas de caja (\textit{boxplots}) para inspeccionar asimetría (\textit{skewness}) y curtosis.
+    \item \textbf{Estructura de Correlaciones:} Calcule la matriz de correlación lineal de Pearson y de correlación de rango de Spearman. Grafique un mapa de calor (\texttt{sns.heatmap}) anotado con una paleta de colores divergente centrada en cero. Identifique colinealidades severas entre predictoras.
+    \item \textbf{Diagrama de Pares (\textit{Pairplot}):} Seleccione las 4 o 5 variables más representativas del problema y genere un \texttt{sns.pairplot}, coloreando opcionalmente por una variable de clase o subpoblación de interés.
+\end{enumerate}
+
+\subsection{1.3 Diagnóstico y Curación de Datos Faltantes con Scikit-Learn}
+\begin{itemize}[leftmargin=*,itemsep=2pt]
+    \item Cuantifique la proporción y distribución de valores nulos (\texttt{NaN}, \texttt{None}, valores nulos centinela como $-999$ o $9999$).
+    \item Discuta la naturaleza del mecanismo de pérdida: ¿Faltantes completamente al azar (MCAR), faltantes al azar (MAR) o no al azar (MNAR)?
+    \item Aplique esquemas de imputación fundados mediante \texttt{sklearn.impute}:
+    \begin{itemize}[itemsep=1pt]
+        \item \texttt{SimpleImputer}: Imputación por media (para distribuciones simétricas) o mediana (robusta ante colas largas/outliers).
+        \item \texttt{KNNImputer}: Imputación multivariada preservando la estructura local de vecinos en el espacio de características.
+        \item \texttt{IterativeImputer} (MICE): Modelado multivariado condicional entre variables correlacionadas.
+    \end{itemize}
+    \item Justifique explícitamente en el texto la técnica elegida para su conjunto de datos.
+\end{itemize}
+
+\subsection{1.4 Detección de Valores Atípicos (\textit{Outliers})}
+Analice la presencia de observaciones anómalas utilizando criterios matemáticos explícitos (e.g. criterio de Tukey basado en el Rango Intercuartílico: $\text{IQR} = Q_3 - Q_1$, definiendo cortes en $[Q_1 - 1.5\,\text{IQR}, Q_3 + 1.5\,\text{IQR}]$, distancias de Mahalanobis o modelos basados en densidad). Discuta si los outliers detectados representan errores observacionales de medición o fenómenos extremos genuinos del sistema bajo estudio.
+
+\subsection{1.5 Transformaciones y Normalización / Escalado}
+Dado que tanto los algoritmos de agrupamiento basados en distancias (K-Means, GMM, DBSCAN) como los algoritmos de optimización por descenso por el gradiente son sumamente sensibles a las escalas de las variables:
+\begin{align}
+    z &= \frac{x - \mu}{\sigma} && (\text{\texttt{StandardScaler}}) \\
+    x_{\text{norm}} &= \frac{x - x_{\min}}{x_{\max} - x_{\min}} && (\text{\texttt{MinMaxScaler}}) \\
+    x_{\text{rob}} &= \frac{x - \text{med}(x)}{\text{IQR}(x)} && (\text{\texttt{RobustScaler}})
+\end{align}
+\begin{itemize}[leftmargin=*,itemsep=2pt]
+    \item Si alguna variable presenta una asimetría muy pronunciada que abarca múltiples órdenes de magnitud (e.g. luminosidades, masas estelares, ingresos económicos), evalúe aplicar primero una transformación logarítmica $\log_{10}(x)$ o de potencia (\texttt{PowerTransformer} / Box-Cox / Yeo-Johnson).
+    \item Aplique y compare el escalador seleccionado de \texttt{sklearn.preprocessing} (\texttt{StandardScaler} vs. \texttt{RobustScaler}). Explique por qué el escalado es un prerrequisito indispensable para los métodos de clustering y descenso por el gradiente.
+\end{itemize}
+
+% ==============================================================================
+% SECCIÓN 3: FASE 2 - APRENDIZAJE NO SUPERVISADO (CLUSTERING)
+% ==============================================================================
+\section{Fase 2: Aprendizaje No Supervisado: Métodos de Agrupamiento}
+\label{sec:fase2}
+
+\begin{fasebox}[Fase 2: Segmentación y Agrupamiento No Supervisado]
+El objetivo es identificar subpoblaciones naturales o regímenes latentes en el espacio de características multidimensional, comparando al menos dos algoritmos con fundamentos matemáticos distintos.
+\end{fasebox}
+
+\subsection{2.1 Formulación y Selección de Variables}
+Seleccione un subconjunto de al menos dos o tres variables físicas/disciplinares continuas que permitan caracterizar las distintas tipologías o regímenes del sistema (por ejemplo: color vs. magnitud en galaxias, expresión de genes marcadores, inflación vs. crecimiento en macroeconomía, etc.).
+
+\subsection{2.2 Aplicación de Algoritmos de Clustering}
+Aplique obligatoriamente \textbf{K-Means} y al menos \textbf{un segundo algoritmo} entre los siguientes:
+\begin{enumerate}[leftmargin=*,itemsep=2pt]
+    \item \textbf{Gaussian Mixture Models (GMM):} Agrupamiento probabilístico blando (\textit{soft clustering}) mediante modelos de mezclas gaussianas con el algoritmo Expectation-Maximization (EM).
+    \item \textbf{DBSCAN:} Agrupamiento basado en densidad, capaz de descubrir conglomerados de morfología no esférica y rechazar ruido/outliers.
+    \item \textbf{Clustering Jerárquico Aglomerativo (\textit{Agglomerative Hierarchical}):} Vinculación por mínima varianza (\textit{Ward linkage}) o distancia media, explorando la jerarquía mediante dendrogramas.
+\end{enumerate}
+
+\subsection{2.3 Determinación del Número Óptimo de Conglomerados}
+No fije el número de grupos arbitrariamente; fundamente la elección mediante métricas objetivas:
+\begin{itemize}[leftmargin=*,itemsep=3pt]
+    \item \textbf{Método del Codo (\textit{Elbow Method}) e Inercia:} Grafique la inercia (suma de distancias cuadráticas intra-cluster, WCSS) en función de $K \in [2, 10]$ e identifique el punto de inflexión.
+    \item \textbf{Coeficiente de Silueta (\textit{Silhouette Score}):} Evalúe la métrica de silueta $s \in [-1, 1]$ y grafique los diagramas de silueta por muestra para verificar la cohesión y separación de los grupos.
+    \item \textbf{Criterios de Información (BIC y AIC para GMM):} Si utiliza GMM, evalúe el Criterio de Información Bayesiano ($BIC$) y de Akaike ($AIC$) variando $K$ y la estructura de covarianza (\texttt{spherical}, \texttt{diag}, \texttt{tied}, \texttt{full}):
+    \begin{equation}
+        \text{BIC} = -2 \ln \mathcal{L} + p \ln(N), \qquad \text{AIC} = -2 \ln \mathcal{L} + 2p
+    \end{equation}
+    donde $p$ es el número de parámetros libres y $\mathcal{L}$ es la máxima verosimilitud de la mezcla.
+    \item \textbf{Ajuste de hiperparámetros en DBSCAN:} Si utiliza DBSCAN, grafique la curva de distancias a los $k$-vecinos más cercanos ($k$-NN distance plot) para fijar el radio de vecindad $\varepsilon$ y el umbral \texttt{min\_samples}.
+\end{itemize}
+
+\subsection{2.4 Visualización e Interpretación de los Grupos}
+\begin{itemize}[leftmargin=*,itemsep=2pt]
+    \item Grafique la partición del espacio bidimensional o de componentes principales (PCA) coloreando las instancias según la etiqueta asignada por cada algoritmo. Si utiliza GMM, grafique las elipses de covarianza a $1\sigma$ y $2\sigma$ de cada componente gaussiana.
+    \item \textbf{Discusión disciplinar:} Interprete qué significado físico, biológico o económico tiene cada cluster encontrado. ¿Reflejan poblaciones conocidas (e.g. secuencia roja vs. nube azul en galaxias, clases de riesgo en crédito, perfiles fenotípicos en genómica) o sugieren una subdivisión no trivial en los datos?
+\end{itemize}
+
+% ==============================================================================
+% SECCIÓN 4: FASE 3 - REGRESIÓN POLINOMIAL, DESCENSO POR EL GRADIENTE Y CV
+% ==============================================================================
+\section{Fase 3: Aprendizaje Supervisado: Modelado Polinomial, Descenso por el Gradiente y Validación Cruzada}
+\label{sec:fase3}
+
+\begin{fasebox}[Fase 3: Modelado de Regresión Polinomial y Optimización Numérica]
+El objetivo es ajustar una relación no lineal entre variables mediante polinomios, optimizar los parámetros mediante Descenso por el Gradiente y seleccionar la complejidad óptima del modelo mediante Validación Cruzada para evitar sobreajuste.
+\end{fasebox}
+
+\subsection{3.1 Definición del Problema de Regresión y Partición de Datos}
+\begin{itemize}[leftmargin=*,itemsep=2pt]
+    \item Seleccione una variable continua dependiente ($y$) y una o más variables predictoras continuas ($x$).
+    \item Realice una partición reproducible de los datos en conjuntos de \textbf{Entrenamiento (Train)} y \textbf{Prueba (Test)} (ej. $80\% - 20\%$) mediante \texttt{train\_test\_split} fijando la semilla aleatoria (\texttt{random\_state}). \textbf{El conjunto de Test debe quedar estrictamente aislado} hasta la evaluación final del modelo seleccionado.
+\end{itemize}
+
+\subsection{3.2 El Modelo Polinomial}
+Se propone aproximar la relación funcional mediante un modelo de regresión polinomial de grado $d$:
+\begin{equation}
+    f(x; \mathbf{w}) = w_0 + w_1 x + w_2 x^2 + \dots + w_d x^d = \sum_{j=0}^d w_j x^j = \bm{\phi}(x)^T \mathbf{w}
+\end{equation}
+donde $\bm{\phi}(x) = [1, x, x^2, \dots, x^d]^T$ representa el vector de características extendidas polinomiales (\texttt{sklearn.preprocessing.PolynomialFeatures}) y $\mathbf{w} = [w_0, w_1, \dots, w_d]^T$ es el vector de coeficientes a determinar.
+
+\subsection{3.3 Optimización de Parámetros por Descenso por el Gradiente}
+Defina la función de costo basada en el Error Cuadrático Medio (\textit{Mean Squared Error}, MSE):
+\begin{equation}
+    J(\mathbf{w}) = \frac{1}{2N} \sum_{i=1}^N \left( f(x_i; \mathbf{w}) - y_i \right)^2 = \frac{1}{2N} \|\bm{\Phi} \mathbf{w} - \mathbf{y}\|_2^2
+\end{equation}
+donde $\bm{\Phi} \in \mathbb{R}^{N \times (d+1)}$ es la matriz de diseño.
+
+El gradiente analítico respecto al vector de parámetros $\mathbf{w}$ viene dado por:
+\begin{equation}
+    \nabla_\mathbf{w} J(\mathbf{w}) = \frac{1}{N} \bm{\Phi}^T (\bm{\Phi} \mathbf{w} - \mathbf{y})
+\end{equation}
+
+La regla de actualización iterativa para cada época o iteración $t$ es:
+\begin{equation}
+    \mathbf{w}^{(t+1)} = \mathbf{w}^{(t)} - \eta \, \nabla_\mathbf{w} J(\mathbf{w}^{(t)})
+\end{equation}
+donde $\eta > 0$ es la \textbf{tasa de aprendizaje} (\textit{learning rate}).
+
+\begin{alertbox}[Requerimientos de Implementación del Descenso por el Gradiente]
+\begin{enumerate}[leftmargin=*,itemsep=2pt]
+    \item Implemente el algoritmo de Descenso por el Gradiente por lotes (\textit{Batch Gradient Descent}) de manera vectorizada en Python/NumPy (o utilice \texttt{SGDRegressor} de \texttt{sklearn.linear\_model}).
+    \item \textbf{Análisis de convergencia de $\eta$:} Experimente con al menos tres valores distintos de tasa de aprendizaje: uno demasiado pequeño (convergencia lenta), uno óptimo y uno demasiado grande (divergencia u oscilaciones inestables).
+    \item \textbf{Curva de Aprendizaje de Pérdida:} Grafique la función de costo $J(\mathbf{w})$ en función del número de iteraciones o épocas para documentar la convergencia matemática.
+\end{enumerate}
+\end{alertbox}
+
+\begin{lstlisting}[caption={Esqueleto orientativo de Descenso por el Gradiente por lotes vectorizado en NumPy.}, label={lst:gd}]
+import numpy as np
+
+def batch_gradient_descent(Phi, y, eta=0.01, n_epochs=2000, tol=1e-6):
+    """
+    Optimiza w mediante Batch Gradient Descent sobre la funcion de costo MSE.
+    Phi: matriz de diseno (N, d+1)
+    y: vector objetivo continuo (N,)
+    """
+    N, p = Phi.shape
+    w = np.zeros(p)  # Inicializacion de coeficientes en cero
+    loss_history = []
+    
+    for epoch in range(n_epochs):
+        residuals = Phi @ w - y
+        loss = (1.0 / (2.0 * N)) * np.sum(residuals**2)
+        loss_history.append(loss)
+        
+        # Calculo analitico exacto del gradiente
+        grad = (1.0 / N) * (Phi.T @ residuals)
+        w_new = w - eta * grad
+        
+        # Criterio de parada por convergencia de parametros
+        if np.linalg.norm(w_new - w) < tol:
+            print(f"Convergencia alcanzada exitosamente en la epoca {epoch}")
+            break
+        w = w_new
+        
+    return w, np.array(loss_history)
+\end{lstlisting}
+
+\subsection{3.4 Optimización de Hiperparámetros mediante Validación Cruzada \texorpdfstring{($k$-Fold CV)}{(k-Fold CV)}}
+El grado polinomial $d$ actúa como un \textbf{hiperparámetro de complejidad}. Un grado insuficiente ($d=1$) provocará subajuste (\textit{underfitting}, alto sesgo), mientras que un grado excesivo ($d \gg 1$) inducirá sobreajuste (\textit{overfitting}, alta varianza):
+\begin{enumerate}[leftmargin=*,itemsep=3pt]
+    \item Implemente un esquema de \textbf{Validación Cruzada con $k$ pliegues ($k$-Fold Cross Validation, con $k=5$ o $10$)} explorando una rejilla de grados polinomiales $d \in \{1, 2, 3, 4, 5, 6, \dots, D_{\max}\}$.
+    \item (Opcional recomendado): Si incluye un término de regularización Ridge ($L_2$) o Lasso ($L_1$), optimice simultáneamente la fuerza de regularización $\alpha$ utilizando \texttt{GridSearchCV} o un bucle estructurado con \texttt{KFold}.
+    \item \textbf{Curva de Validación (\textit{Validation Curve}):} Grafique el error cuadrático medio de entrenamiento ($MSE_{\text{train}}$) y el error promedio de validación cruzada ($MSE_{\text{val}}$) junto con sus barras de error estándar en función del grado polinomial $d$.
+    \item \textbf{Selección de la complejidad óptima ($d^*$):} Identifique el grado que minimiza el error de validación sin incrementar la varianza.
+    \item \textbf{Evaluación final en Test:} Ajuste el modelo de grado óptimo $d^*$ con todo el conjunto de entrenamiento y evalúe su generalización de forma no sesgada sobre el conjunto de Test retenido, reportando las métricas:
+    \begin{equation}
+        R^2 = 1 - \frac{\sum (y_i - \hat{y}_i)^2}{\sum (y_i - \bar{y})^2}, \qquad
+        \text{RMSE} = \sqrt{\frac{1}{N_{\text{test}}} \sum_{i=1}^{N_{\text{test}}} (y_i - \hat{y}_i)^2}, \qquad
+        \text{MAE} = \frac{1}{N_{\text{test}}} \sum_{i=1}^{N_{\text{test}}} |y_i - \hat{y}_i|
+    \end{equation}
+\end{enumerate}
+
+% ==============================================================================
+% SECCIÓN 5: FASE 4 - INFERENCIA BAYESIANA Y MCMC
+% ==============================================================================
+\section{Fase 4: Inferencia Bayesiana: Muestreo MCMC de los Parámetros del Modelo Óptimo}
+\label{sec:fase4}
+
+\begin{fasebox}[Fase 4: Inferencia Bayesiana con Cadenas de Markov Monte Carlo (MCMC)]
+El objetivo es superar las limitaciones de la estimación puntual del descenso por el gradiente, obteniendo la distribución de probabilidad a posteriori completa (\textit{Posterior PDF}) de los parámetros del polinomio óptimo y cuantificando las incertidumbres y covarianzas entre coeficientes.
+\end{fasebox}
+
+\subsection{5.1 Formulación Probabilística Bayesiana}
+Considere el modelo de regresión polinomial con la complejidad óptima $d^*$ seleccionada en la Fase 3. Supondremos que cada observación $y_i$ se genera a partir de la función polinomial subyacente más un término de ruido gaussiano estocástico con dispersión $\sigma$:
+\begin{equation}
+    y_i = f(x_i; \mathbf{w}) + \epsilon_i = \sum_{j=0}^{d^*} w_j x_i^j + \epsilon_i, \qquad \epsilon_i \sim \mathcal{N}(0, \sigma^2)
+\end{equation}
+El vector completo de parámetros a inferir es $\bm{\theta} = [w_0, w_1, \dots, w_{d^*}, \sigma]^T \in \mathbb{R}^{d^* + 2}$ (o $\ln \sigma$).
+
+\subsection{5.2 Funciones de Verosimilitud, Priors y Posterior}
+Bajo la hipótesis de observaciones independientes e idénticamente distribuidas, la función de \textbf{Log-Verosimilitud} ($\ln \mathcal{L}$) es:
+\begin{equation}
+    \ln \mathcal{L}(\bm{\theta}) = -\frac{N}{2} \ln(2\pi\sigma^2) - \frac{1}{2\sigma^2} \sum_{i=1}^N \left( y_i - f(x_i; \mathbf{w}) \right)^2
+\end{equation}
+Si los datos cuentan con incertidumbres de medición heterocedásticas reportadas $\sigma_{y,i}$, la verosimilitud se generaliza como:
+\begin{equation}
+    \ln \mathcal{L}(\bm{\theta}) = -\frac{1}{2} \sum_{i=1}^N \left[ \frac{(y_i - f(x_i; \mathbf{w}))^2}{\sigma_{y,i}^2 + \sigma_{\text{int}}^2} + \ln\left(2\pi(\sigma_{y,i}^2 + \sigma_{\text{int}}^2)\right) \right]
+\end{equation}
+donde $\sigma_{\text{int}}$ representa la dispersión intrínseca del sistema.
+
+\begin{itemize}[leftmargin=*,itemsep=3pt]
+    \item \textbf{Distribuciones a Priori ($p(\bm{\theta})$):} Seleccione y justifique las distribuciones a priori de los parámetros:
+    \begin{itemize}[itemsep=1pt]
+        \item Priors planos o débilmente informativos uniformes para los coeficientes: $w_j \sim \mathcal{U}(w_{j,\min}, w_{j,\max})$ o gaussianos amplios $w_j \sim \mathcal{N}(0, \sigma_w^2)$.
+        \item Prior de escala de Jeffreys para el ruido: $p(\sigma) \propto 1/\sigma \iff p(\ln \sigma) \propto \text{const}$, o un prior Half-Cauchy / Half-Normal positivo.
+    \end{itemize}
+    \item \textbf{Log-Posterior:} Aplicando el Teorema de Bayes:
+    \begin{equation}
+        \ln p(\bm{\theta} \mid \mathcal{D}) = \ln \mathcal{L}(\bm{\theta}) + \ln p(\bm{\theta}) + \text{constante}
+    \end{equation}
+\end{itemize}
+
+\subsection{5.3 Muestreo de la Posterior con MCMC (\texttt{emcee} o \texttt{PyMC})}
+\begin{itemize}[leftmargin=*,itemsep=2pt]
+    \item Utilice la biblioteca \texttt{emcee} (\textit{Affine-Invariant Ensemble Sampler}) o alternativamente \texttt{PyMC} / \texttt{Stan}.
+    \item Inicialice un ensamble de al menos $N_{\text{walkers}} \ge 2 \times \dim(\bm{\theta})$ caminantes (e.g. 32 a 64 caminantes) en una pequeña bola gaussiana alrededor de los valores óptimos obtenidos por Descenso por el Gradiente.
+    \item Ejecute la cadena durante un número representativo de pasos (e.g. $N_{\text{steps}} \ge 2000$).
+\end{itemize}
+
+\subsection{5.4 Diagnóstico de Convergencia}
+\begin{enumerate}[leftmargin=*,itemsep=2pt]
+    \item \textbf{Gráfico de Trazas (\textit{Trace Plots}):} Grafique la evolución temporal de cada parámetro $\theta_k$ en función de la iteración para todos los caminantes. Verifique que las trayectorias se hayan mezclado de manera homogénea (\textit{well-mixed}).
+    \item \textbf{Período de Calentamiento (\textit{Burn-in}):} Descarte las primeras muestras de la cadena (típicamente las primeras 300 a 500 iteraciones) antes de que el ensamble alcance el estado estacionario.
+    \item \textbf{Tiempo de Autocorrelación Integrada ($\tau$):} Estime el tiempo de autocorrelación $\tau_k$ para cada parámetro y verifique la condición de confiabilidad estándar: $N_{\text{steps}} \ge 50\,\tau$.
+\end{enumerate}
+
+\subsection{5.5 Análisis de las Distribuciones Posteriores y Propagación de Incertidumbre}
+\begin{enumerate}[leftmargin=*,itemsep=3pt]
+    \item \textbf{Diagrama de Esquinas (\textit{Corner Plot}):} Con la librería \texttt{corner}, genere la matriz de distribuciones posteriores marginales univariadas y contornos de densidad conjunta bidimensional a $1\sigma$ ($39.3\%$), $2\sigma$ ($86.5\%$) y $3\sigma$.
+    \item \textbf{Parámetros y Credibilidad:} Calcule los estimadores de tendencia central (mediana o moda posterior / MAP) y los intervalos de credibilidad del $68\%$ y $95\%$ (percentiles 16\%, 50\% y 84\%):
+    \begin{equation}
+        \theta_k = \hat{\theta}_{k,\text{med}}{}_{-\sigma_-}^{+\sigma_+}
+    \end{equation}
+    \item \textbf{Contraste con Descenso por el Gradiente:} Compare en una tabla estructurada los valores de los parámetros obtenidos por Descenso por el Gradiente (estimador puntual tipo Maximum Likelihood) frente a la mediana e intervalos de credibilidad obtenidos por MCMC. Discuta la coherencia entre ambos métodos.
+    \item \textbf{Propagación de Incertidumbre sobre el Ajuste:} Extraiga 100 realizaciones aleatorias de $\mathbf{w}$ a partir de la cadena MCMC ya convergida y grafique las curvas polinomiales resultantes sobre los datos de dispersión originales, delimitando las \textbf{bandas de credibilidad del 68\% y 95\%} del ajuste.
+\end{enumerate}
+
+\begin{lstlisting}[caption={Esqueleto orientativo de muestreo Bayesiano MCMC con \texttt{emcee} y visualizaci\'on con \texttt{corner}.}, label={lst:mcmc}]
+import emcee
+import corner
+import numpy as np
+import matplotlib.pyplot as plt
+
+# 1. Definicion de Log-Likelihood, Log-Prior y Log-Probability
+def log_likelihood(theta, x, y, yerr=None):
+    w, log_sigma = theta[:-1], theta[-1]
+    sigma = np.exp(log_sigma)
+    model = np.polyval(w[::-1], x)  # w_0 + w_1*x + ... + w_d*x^d
+    if yerr is None:
+        sigma2 = sigma**2
+    else:
+        sigma2 = yerr**2 + sigma**2
+    return -0.5 * np.sum((y - model)**2 / sigma2 + np.log(2 * np.pi * sigma2))
+
+def log_prior(theta):
+    w, log_sigma = theta[:-1], theta[-1]
+    # Priors gaussianos amplios para w y uniforme para log(sigma)
+    if -10.0 < log_sigma < 5.0 and np.all(np.abs(w) < 1e3):
+        return -0.5 * np.sum((w / 50.0)**2)
+    return -np.inf
+
+def log_probability(theta, x, y, yerr=None):
+    lp = log_prior(theta)
+    if not np.isfinite(lp):
+        return -np.inf
+    return lp + log_likelihood(theta, x, y, yerr)
+
+# 2. Inicializacion de caminantes (walkers) alrededor del optimo
+ndim = len(w_optimal) + 1  # coeficientes polinomiales + log_sigma
+nwalkers = 32
+initial_pos = [np.append(w_optimal, np.log(np.std(residuals))) + 1e-4 * np.random.randn(ndim) 
+               for _ in range(nwalkers)]
+
+# 3. Muestreo con EnsembleSampler
+sampler = emcee.EnsembleSampler(nwalkers, ndim, log_probability, args=(x_train, y_train))
+sampler.run_mcmc(initial_pos, 2500, progress=True)
+
+# 4. Descarte de burn-in y extraccion de cadenas aplanadas
+tau = sampler.get_autocorr_time(quiet=True)
+burn_in = int(2 * np.max(tau)) if np.all(np.isfinite(tau)) else 500
+flat_samples = sampler.get_chain(discard=burn_in, thin=15, flat=True)
+
+# 5. Generacion del Corner Plot con cuantiles
+labels = [f"$w_{i}$" for i in range(len(w_optimal))] + [r"$\ln\sigma$"]
+fig = corner.corner(flat_samples, labels=labels, quantiles=[0.16, 0.50, 0.84],
+                    show_titles=True, title_fmt=".3f")
+plt.show()
+\end{lstlisting}
+
+% ==============================================================================
+% SECCIÓN 6: ENTREGABLES Y ESTRUCTURA DEL INFORME
+% ==============================================================================
+\section{Formato de Entrega y Estructura del Trabajo}
+\label{sec:entregables}
+
+El trabajo práctico se presentará a través del repositorio institucional o plataforma de entrega en los siguientes formatos:
+\begin{enumerate}[leftmargin=*,itemsep=2pt]
+    \item \textbf{Jupyter Notebook reproducible (\texttt{.ipynb}):}
+    \begin{itemize}[itemsep=1pt]
+        \item Código organizado en módulos o celdas lógicas, con comentarios explicativos claros.
+        \item Semillas aleatorias fijadas (\texttt{random\_state=42} o equivalente) para asegurar la exacta reproducibilidad de los experimentos.
+        \item Todas las figuras deben ser auto-contenidas: títulos informativos, nombres de ejes con sus respectivas unidades físicas/conceptuales y leyendas legibles.
+    \end{itemize}
+    \item \textbf{Informe Técnico / Reporte Académico (PDF de 6 a 10 páginas):}
+    Estructurado bajo formato científico estándar:
+    \begin{itemize}[itemsep=1pt]
+        \item \textbf{1. Introducción y Contexto Disciplinar:} Descripción del problema científico o industrial, relevancia de los datos y preguntas a responder.
+        \item \textbf{2. Exploración, Curación y Preprocesamiento:} Resumen del EDA, justificación de imputación y normalización.
+        \item \textbf{3. Análisis de Agrupamiento (Clustering):} Comparación de algoritmos, métricas de número de clusters e interpretación de regímenes.
+        \item \textbf{4. Modelado Polinomial y Validación Cruzada:} Descenso por el gradiente, curvas de pérdida, análisis de sesgo-varianza y selección de $d^*$.
+        \item \textbf{5. Inferencia Bayesiana MCMC:} Definición de verosimilitud y priors, diagnósticos de convergencia, corner plot e interpretación de la incertidumbre.
+        \item \textbf{6. Conclusiones y Discusión:} Síntesis de hallazgos disciplinarios, limitaciones del modelo y perspectivas futuras.
+    \end{itemize}
+\end{enumerate}
+
+% ==============================================================================
+% SECCIÓN 7: RÚBRICA DE EVALUACIÓN
+% ==============================================================================
+\section{Rúbrica de Evaluación Ponderada}
+\label{sec:rubrica}
+
+La calificación final del Trabajo Práctico N° 2 se regirá por la siguiente escala ponderada de 100 puntos totales:
+
+\begin{table}[htbp]
+\centering\small
+\renewcommand{\arraystretch}{1.25}
+\begin{tabularx}{\textwidth}{p{3.3cm} X c}
+\toprule
+\textbf{Componente / Fase} & \textbf{Criterios de Evaluación y Rigor Metodológico} & \textbf{Puntaje} \\
+\midrule
+\textbf{1. Dataset, Ingesta \& EDA} & 
+Selección adecuada de dataset con complejidad real ($N \ge 500$). Análisis exploratorio riguroso con distribuciones, correlaciones y pairplots en Seaborn. Interpretación conceptual de variables. & \textbf{15 pts} \\
+\midrule
+\textbf{2. Curación, Imputación \& Normalización} & 
+Diagnóstico de nulos. Implementación y justificación técnica de imputación en Scikit-Learn (\texttt{SimpleImputer} / \texttt{KNNImputer}). Detección de outliers y fundamentación del escalador seleccionado. & \textbf{15 pts} \\
+\midrule
+\textbf{3. Clustering \& Métodos No Supervisados} & 
+Aplicación y comparación de K-Means y un segundo método (GMM/DBSCAN/Jerárquico). Selección fundada de hiperparámetros (Codo, Silueta, BIC/AIC). Interpretación disciplinar profunda de los grupos. & \textbf{20 pts} \\
+\midrule
+\textbf{4. Regresión Polinomial, Gradiente \& CV} & 
+Ajuste polinomial con optimización por Descenso por el Gradiente. Estudio de convergencia y tasa de aprendizaje $\eta$. Validación cruzada ($k$-fold) para optimizar el grado $d^*$. Métricas en Test ($R^2$, RMSE). & \textbf{25 pts} \\
+\midrule
+\textbf{5. Inferencia Bayesiana \& MCMC} & 
+Formulación probabilística rigurosa (Verosimilitud, Priors, Log-Posterior). Diagnósticos de convergencia (trazas, autocorrelación, burn-in). Corner plot, intervalos de credibilidad y contraste con el gradiente. & \textbf{20 pts} \\
+\midrule
+\textbf{6. Calidad del Informe \& Reproducibilidad} & 
+Claridad expositiva, redacción científica, código limpio y ejecutable de punta a punta sin errores, reproducibilidad de figuras y resultados. & \textbf{5 pts} \\
+\bottomrule
+\textbf{TOTAL} & & \textbf{100 pts} \\
+\bottomrule
+\end{tabularx}
+\caption{Rúbrica detallada de calificación para el Trabajo Práctico N° 2.}
+\label{tab:rubrica}
+\end{table}
+
+% ==============================================================================
+% SECCIÓN 8: REFERENCIAS Y BIBLIOGRAFÍA RECOMENDADA
+% ==============================================================================
+\section{Bibliografía y Referencias Recomendadas}
+\label{sec:bibliografia}
+
+\begin{enumerate}[leftmargin=*,itemsep=2pt]
+    \item \textbf{Ivezi\'{c}, \v{Z}., Connolly, A. J., VanderPlas, J. T., \& Gray, A.} (2014). \textit{Statistics, Data Mining, and Machine Learning in Astronomy: A Practical Python Guide for the Analysis of Survey Data}. Princeton University Press.
+    \item \textbf{Hastie, T., Tibshirani, R., \& Friedman, J.} (2009). \textit{The Elements of Statistical Learning: Data Mining, Inference, and Prediction} (2nd ed.). Springer.
+    \item \textbf{Foreman-Mackey, D., Hogg, D. W., Lang, D., \& Goodman, J.} (2013). \textit{\texttt{emcee}: The MCMC Hammer}. Publications of the Astronomical Society of the Pacific, 125(925), 306.
+    \item \textbf{Hogg, D. W., Bovy, J., \& Lang, D.} (2010). \textit{Data analysis recipes: Fitting a model to data}. arXiv preprint \href{https://arxiv.org/abs/1008.4686}{arXiv:1008.4686}.
+    \item \textbf{Gelman, A., Carlin, J. B., Stern, H. S., Dunson, D. B., Vehtari, A., \& Rubin, D. B.} (2013). \textit{Bayesian Data Analysis} (3rd ed.). Chapman and Hall/CRC.
+    \item \textbf{Scikit-Learn Documentation:} \url{https://scikit-learn.org/stable/}
+    \item \textbf{Emcee Documentation:} \url{https://emcee.readthedocs.io/en/stable/}
+\end{enumerate}
+
+\end{document}
