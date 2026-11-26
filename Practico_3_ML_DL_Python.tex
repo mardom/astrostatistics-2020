@@ -1,0 +1,548 @@
+\documentclass[11pt,a4paper]{article}
+
+% --- PAQUETES FUNDAMENTALES ---
+\usepackage[utf8]{inputenc}
+\usepackage[spanish, provide=*]{babel}
+\addto\captionsspanish{\renewcommand{\tablename}{Tabla}}
+\usepackage[margin=2.2cm,top=2.5cm,bottom=2.5cm]{geometry}
+\usepackage{amsmath,amssymb,amsfonts,bm}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{fancyhdr}
+\usepackage[expansion=false]{microtype}
+\usepackage{listings}
+\usepackage{caption}
+
+% --- PALETA DE COLORES PROFESIONAL ---
+\definecolor{NavyMain}{RGB}{16, 44, 87}
+\definecolor{BlueAccent}{RGB}{53, 101, 169}
+\definecolor{LightBlueBg}{RGB}{240, 244, 250}
+\definecolor{GoldAccent}{RGB}{197, 143, 39}
+\definecolor{DarkSlate}{RGB}{33, 37, 41}
+\definecolor{LightGrayBg}{RGB}{248, 249, 250}
+\definecolor{BorderGray}{RGB}{210, 215, 222}
+\definecolor{CodeGreen}{RGB}{40, 140, 70}
+\definecolor{CodeBlue}{RGB}{20, 80, 160}
+\definecolor{CodePurple}{RGB}{120, 40, 140}
+\definecolor{AlertRed}{RGB}{160, 40, 40}
+
+% --- CONFIGURACIÓN DE HYPERREF ---
+\hypersetup{
+    colorlinks=true,
+    linkcolor=BlueAccent,
+    citecolor=NavyMain,
+    urlcolor=BlueAccent,
+    pdftitle={Guía Práctico 3 - Ciclo Completo de ML Clásico y Deep Learning con Python},
+    pdfauthor={Mariano Domínguez - Astroestadística},
+    pdfsubject={Machine Learning, Deep Learning, Validación Cruzada y Comparación de Arquitecturas},
+    pdfkeywords={Machine Learning, Deep Learning, PyTorch, Scikit-Learn, TensorBoard, Cross Validation, Hiperparámetros, Clasificación, Regresión}
+}
+
+% --- TIPOGRAFÍA Y ENCABEZADOS ---
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{DarkSlate}\textbf{FAAP 2026} \textbar\ Práctico N° 3}
+\fancyhead[R]{\small\color{DarkSlate}Ciclo Integral de ML Clásico \& Deep Learning}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.6pt}
+\renewcommand{\footrulewidth}{0.3pt}
+\setlength{\headheight}{14pt}
+
+% --- FORMATO DE SECCIONES Y LISTAS SIN PAQUETES EXTERNOS ---
+\makeatletter
+\def\@seccntformat#1{\csname the#1\endcsname.\hspace{0.55em}}
+\renewcommand\section{\@startsection{section}{1}{\z@}%
+  {-3.0ex \@plus -1ex \@minus -.2ex}%
+  {1.4ex \@plus .2ex}%
+  {\color{NavyMain}\normalfont\Large\bfseries}}
+\renewcommand\subsection{\@startsection{subsection}{2}{\z@}%
+  {-2.4ex \@plus -.8ex \@minus -.2ex}%
+  {1.0ex \@plus .2ex}%
+  {\color{BlueAccent}\normalfont\large\bfseries}}
+\renewcommand\subsubsection{\@startsection{subsubsection}{3}{\z@}%
+  {-2.0ex \@plus -.5ex \@minus -.2ex}%
+  {0.8ex \@plus .2ex}%
+  {\color{DarkSlate}\normalfont\normalsize\bfseries}}
+\makeatother
+
+\newcommand{\secrule}{\vspace{-0.55em}\noindent{\color{NavyMain}\rule{\textwidth}{0.6pt}}\par\vspace{0.45em}}
+
+\let\origitemize\itemize
+\let\endorigitemize\enditemize
+\renewenvironment{itemize}{\origitemize\setlength{\itemsep}{2pt}\setlength{\parskip}{0pt}\setlength{\parsep}{0pt}}{\endorigitemize}
+
+\let\origenumerate\enumerate
+\let\endorigenumerate\endenumerate
+\renewenvironment{enumerate}{\origenumerate\setlength{\itemsep}{2pt}\setlength{\parskip}{0pt}\setlength{\parsep}{0pt}}{\endorigenumerate}
+
+% --- CAJAS DESTACADAS PROPIAS (SIN TCOLORBOX) ---
+\makeatletter
+\newsavebox{\@styledboxcontent}
+\newenvironment{styledbox}[4]{%
+  \def\@sbframe{#1}%
+  \def\@sbback{#2}%
+  \def\@sbtcolor{#3}%
+  \def\@sbtitle{#4}%
+  \begin{lrbox}{\@styledboxcontent}%
+    \begin{minipage}{\dimexpr\textwidth-18pt\relax}%
+      \vspace{4pt}%
+}{%
+      \vspace{4pt}%
+    \end{minipage}%
+  \end{lrbox}%
+  \par\medskip\noindent
+  \begingroup
+  \setlength{\fboxsep}{0pt}%
+  \setlength{\fboxrule}{1pt}%
+  \fcolorbox{\@sbframe}{\@sbback}{%
+    \begin{minipage}{\dimexpr\textwidth-2pt\relax}%
+      \colorbox{\@sbframe}{%
+        \makebox[\dimexpr\textwidth-2pt\relax][l]{%
+          \hspace{8pt}\rule[-5pt]{0pt}{18pt}{\bfseries\sffamily\color{\@sbtcolor}\@sbtitle}%
+        }%
+      }\par\vspace{2pt}%
+      \hspace*{8pt}\usebox{\@styledboxcontent}%
+      \par\vspace{2pt}%
+    \end{minipage}%
+  }%
+  \endgroup\par\medskip%
+}
+\makeatother
+
+\newenvironment{objetivobox}[1][]{\begin{styledbox}{NavyMain}{LightBlueBg}{white}{#1}}{\end{styledbox}}
+\newenvironment{alertbox}[1][]{\begin{styledbox}{AlertRed}{red!5!white}{white}{#1}}{\end{styledbox}}
+\newenvironment{tipbox}[1][]{\begin{styledbox}{GoldAccent}{LightGrayBg}{DarkSlate}{#1}}{\end{styledbox}}
+\newenvironment{fasebox}[1][]{\begin{styledbox}{BlueAccent}{white}{white}{#1}}{\end{styledbox}}
+
+% --- CONFIGURACIÓN DE LISTINGS PARA CÓDIGO PYTHON ---
+\lstset{
+    language=Python,
+    basicstyle=\ttfamily\footnotesize\color{DarkSlate},
+    keywordstyle=\bfseries\color{CodeBlue},
+    commentstyle=\itshape\color{CodeGreen},
+    stringstyle=\color{CodePurple},
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    stepnumber=1,
+    numbersep=8pt,
+    backgroundcolor=\color{LightGrayBg},
+    frame=single,
+    framerule=0.5pt,
+    rulecolor=\color{BorderGray},
+    breaklines=true,
+    breakatwhitespace=true,
+    showstringspaces=false,
+    tabsize=4,
+    xleftmargin=12pt,
+    framexleftmargin=8pt
+}
+
+% --- INICIO DEL DOCUMENTO ---
+\begin{document}
+
+% --- PORTADA / ENCABEZADO PRINCIPAL ---
+\begin{center}
+    {\large\scshape Universidad de La Serena, Chile  \textbar\ FRC 2026}\\[0.2cm]
+    {\color{NavyMain}\rule{\textwidth}{2pt}}\\[0.35cm]
+    {\huge\bfseries\color{NavyMain} Trabajo Práctico N° 3}\\[0.25cm]
+    {\Large\bfseries\color{BlueAccent} Ciclo Integral de Aprendizaje Supervisado: Del Machine Learning Clásico al Deep Learning}\\[0.15cm]
+    {\large\itshape Selección de Variable Objetivo, Portafolio de Arquitecturas, Parámetros vs.\ Hiperparámetros,\\
+    Validación Cruzada sin Fuga de Datos y Evaluación Comparativa de Métricas}\\[0.35cm]
+    {\color{NavyMain}\rule{\textwidth}{1pt}}\\[0.3cm]
+    \textbf{Profesor Titular:} Dr. Mariano Domínguez \quad\textbar\quad
+    \textbf{Entorno:} Python 3.10+ (Scikit-Learn, PyTorch, TensorBoard)
+\end{center}
+
+\vspace{0.3cm}
+
+\begin{objetivobox}[Objetivos Pedagógicos y Alcance (Continuación del Práctico N° 2)]
+En el \textbf{Práctico N° 2} abordamos la ingesta, el análisis exploratorio (EDA), la curación, el agrupamiento no supervisado (\textit{clustering}), la regresión polinomial univariada con descenso por el gradiente y la inferencia bayesiana MCMC. En este \textbf{Trabajo Práctico N° 3} damos el salto hacia el \textbf{ciclo de producción e investigación en aprendizaje supervisado moderno}, reutilizando el dominio y dataset ya curado (o ampliado) para resolver un problema predictivo real de \textbf{clasificación o regresión multivariada}.
+
+Al finalizar este trabajo práctico, el estudiante será capaz de:
+\begin{enumerate}
+    \item \textbf{Formular un problema supervisado riguroso} eligiendo una variable objetivo ($y$) de clasificación o regresión y blindando el flujo frente a la \textbf{fuga de datos} (\textit{data leakage}) mediante \texttt{Pipeline} y \texttt{ColumnTransformer}.
+    \item \textbf{Diseñar un portafolio diverso de arquitecturas} que abarque desde modelos lineales regularizados y ensambles de árboles hasta al menos una \textbf{arquitectura de Deep Learning en PyTorch} (MLP/ResMLP tabular, 1D/2D-CNN o Transformer).
+    \item \textbf{Distinguir y optimizar sistemáticamente parámetros ($\bm{\theta}$) e hiperparámetros ($\bm{\lambda}$)}, utilizando optimización convexa/basada en árboles en \texttt{scikit-learn} y optimización estocástica por mini-lotes con \texttt{AdamW}, \textit{schedulers}, \textit{Early Stopping} y monitoreo en \textbf{TensorBoard}.
+    \item \textbf{Evaluar y comparar cuantitativamente las arquitecturas} mediante validación cruzada estratificada o estándar ($k$-Fold CV), métricas específicas de la tarea, curvas diagnósticas (ROC, PR, calibración o análisis de residuos) y balance entre desempeño y costo computacional.
+    \item \textbf{Interpretar las predicciones y analizar errores}, identificando qué características impulsan cada arquitectura y relacionando los fallos con los regímenes o subpoblaciones latentes del sistema.
+\end{enumerate}
+\end{objetivobox}
+
+% ==============================================================================
+% SECCIÓN 1: CONTINUIDAD, VARIABLE OBJETIVO Y PROTOCOLO ANTI-LEAKAGE
+% ==============================================================================
+\newpage
+\section{Continuidad con el Práctico N° 2, Variable Objetivo y Protocolo Anti-Leakage}
+\label{sec:target_leakage}
+\secrule
+
+\subsection{Continuidad del Dataset y Modalidades de Modelado}
+Como punto de partida natural, \textbf{reutilice el dataset curado y analizado en el Práctico N° 2}. Si su conjunto de datos previo careciera de una variable objetivo adecuada o tuviese un tamaño muestral muy reducido para redes neuronales, puede ampliar el catálogo con más registros o seleccionar un dataset compatible del mismo dominio con al menos $N \ge 1000$ observaciones y $P \ge 6$ características predictoras.
+
+Cada estudiante (o grupo) deberá elegir \textbf{una sola modalidad supervisada} en función de la naturaleza de la variable dependiente $y$ seleccionada:
+
+\begin{itemize}
+    \item \textbf{Modalidad A — Clasificación (Binaria o Multiclase):} $y \in \{0, 1\}$ o $y \in \{1, \dots, C\}$.
+    \begin{itemize}
+        \item Ejemplos disciplinares: separación estrella/galaxia/cuásar (SDSS), detección de fallas en turbinas (\texttt{turbine\_\allowbreak fault\_\allowbreak diagnostics.csv}), riesgo crediticio en el conjunto \texttt{credit\_\allowbreak risk\_\allowbreak classification.csv}, diagnóstico clínico o regímenes económicos.
+        \item Inspeccione la distribución de frecuencias de clase. Si existe desbalance severo (e.g., clase minoritaria $< 15\%$), utilice estrategias adecuadas como \texttt{class\_weight='balanced'}, ajuste de umbral de decisión o ponderación en la función de pérdida, evitando depender únicamente de la \textit{Accuracy}.
+    \end{itemize}
+    \item \textbf{Modalidad B — Regresión Multivariada No Lineal:} $y \in \mathbb{R}$.
+    \begin{itemize}
+        \item Ejemplos disciplinares: estimación de corrimiento al rojo fotométrico (\textit{photo-$z$}), masa estelar, predicción de retorno o PIB per cápita, vida útil remanente de maquinaria o concentración de biomarcadores.
+        \item Analice la asimetría y escala de $y$. Si $y$ abarca varios órdenes de magnitud, evalúe una transformación de la variable objetivo (e.g., $\log_{10} y$ o \texttt{TransformedTargetRegressor}) y reporte sus métricas tanto en la escala transformada como en la escala física original.
+    \end{itemize}
+\end{itemize}
+
+\begin{alertbox}[Advertencia Crítica: Circularidad y Fuga de Datos (\textit{Data Leakage})]
+\begin{enumerate}
+    \item \textbf{Evite objetivos triviales o circulares:} Si utiliza los \textit{clusters} hallados en el Práctico N° 2 como etiquetas de clasificación, \textbf{no} entrene modelos supervisados con las mismas variables exactas que definieron la distancia euclidiana de K-Means sin declararlo explícitamente: eso solo recupera la frontera geométrica artificial. Prefiera etiquetas reales independientes (espectroscopía, fallas medidas, diagnósticos) o prediga un régimen a partir de un conjunto disjunto de observables.
+    \item \textbf{Aislamiento estricto del conjunto de Prueba (Test):} Realice la partición inicial (\textbf{80\% Desarrollo / 20\% Test}) antes de calcular medias, desviaciones estándar, imputaciones o codificaciones. Use \texttt{StratifiedShuffleSplit} (Modalidad A), partición aleatoria reproducible (Modalidad B) o \textbf{partición temporal estricta} si los datos son series de tiempo.
+    \item \textbf{Encapsulamiento en \texttt{Pipeline}:} Todo escalador (\texttt{StandardScaler}, \texttt{RobustScaler}), imputador (\texttt{SimpleImputer}, \texttt{KNNImputer}) o codificador debe ajustarse (\texttt{.fit}) \textbf{únicamente} sobre los pliegues de entrenamiento dentro de cada iteración de validación cruzada.
+\end{enumerate}
+\end{alertbox}
+
+% ==============================================================================
+% SECCIÓN 2: FASE 1 - SELECCIÓN DE ARQUITECTURAS CANDIDATAS
+% ==============================================================================
+\section{Fase 1: Diseño del Portafolio de Arquitecturas (ML Clásico y Deep Learning)}
+\label{sec:arquitecturas}
+\secrule
+
+\begin{fasebox}[Fase 1: Diversidad de Sesgos Inductivos]
+No existe un algoritmo universalmente superior (\textit{No Free Lunch Theorem}). El estudiante debe construir y justificar un portafolio de \textbf{al menos cuatro familias de arquitecturas distintas}, cubriendo tanto métodos clásicos sobre datos tabulares como redes neuronales profundas en \textbf{PyTorch}.
+\end{fasebox}
+
+Deberá implementar obligatoriamente las siguientes cuatro categorías:
+
+\begin{enumerate}
+    \item \textbf{Referencia y Modelo Lineal Regularizado (\textit{Baseline}):}
+    \begin{itemize}
+        \item Incluya un predictor ingenuo (\texttt{DummyClassifier} o \texttt{DummyRegressor}) para fijar el piso mínimo de desempeño, junto con un modelo lineal regularizado: \texttt{LogisticRegression} (penalización $L_2$/$L_1$) para clasificación, o \texttt{Ridge} / \texttt{ElasticNet} para regresión.
+    \end{itemize}
+    \item \textbf{Ensamble basado en Bagging o Métodos de Kernel (Familia No Lineal Clásica 1):}
+    \begin{itemize}
+        \item \textbf{Random Forest} (\texttt{RandomForestClassifier/Regressor}), reduciendo la varianza mediante promediado de árboles descorrelacionados; o alternativamente una \textbf{Máquina de Vectores de Soporte} (\texttt{SVC/SVR} con kernel RBF) o \textbf{Proceso Gaussiano}.
+    \end{itemize}
+    \item \textbf{Ensamble basado en Boosting de Gradiente (Familia No Lineal Clásica 2):}
+    \begin{itemize}
+        \item \textbf{Gradient Boosting} moderno: \texttt{HistGradientBoostingClassifier/\allowbreak Regressor}, \texttt{XGBoost} o \texttt{LightGBM}, construyendo árboles de manera aditiva para corregir secuencialmente los residuos o gradientes de pérdida.
+    \end{itemize}
+    \item \textbf{Arquitectura de Deep Learning en PyTorch (Obligatoria):}
+    \begin{itemize}
+        \item \textbf{Datos tabulares:} Implemente un \textbf{Perceptrón Multicapa Profundo o ResMLP Tabular} en PyTorch (con bloques lineales, \texttt{LayerNorm} o \texttt{BatchNorm1d}, activaciones no saturantes como \texttt{SiLU} o \texttt{GELU}, conexiones residuales opcionales y \texttt{Dropout}), entrenado por mini-lotes mediante \texttt{TensorDataset} y \texttt{DataLoader} (acelerado en GPU \texttt{cuda} si está disponible).
+        \item \textbf{Datos secuenciales, espectros o imágenes (opcional si su dataset lo amerita):} En lugar de (o además del) MLP tabular, puede diseñar una \textbf{CNN 1D/2D} o un \textbf{Transformer Encoder} con mecanismo de autoatención, conectando directamente con las clases de \texttt{DeepLearning2} y \texttt{DeepLearning3}.
+    \end{itemize}
+\end{enumerate}
+
+\begin{table}[htbp]
+\centering\small
+\renewcommand{\arraystretch}{1.25}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{3.0cm} >{\raggedright\arraybackslash}p{3.5cm} >{\raggedright\arraybackslash}p{3.5cm} >{\raggedright\arraybackslash}X}
+\toprule
+\textbf{Familia de Modelo} & \textbf{Sesgo Inductivo Principal} & \textbf{Parámetros Aprendidos ($\bm{\theta}$)} & \textbf{Hiperparámetros Clave ($\bm{\lambda}$)} \\
+\midrule
+Lineal / Logístico Regularizado & Fronteras o hiperplanos lineales globales; suavidad $L_1$/$L_2$. & Pesos $\mathbf{w}$ y sesgo $b$ optimizados por verosimilitud / MSE. & Fuerza de regularización ($C$ o $\alpha$), razón $L_1/L_2$ (\texttt{l1\_ratio}). \\
+\midrule
+Random Forest (Bagging) & Particiones ortogonales a los ejes; promedio paralelo de alta capacidad. & Reglas de corte (variable, umbral) y valores en hojas de cada árbol. & \texttt{n\_estimators}, \texttt{max\_depth}, \texttt{min\_samples\_leaf}, \texttt{max\_features}. \\
+\midrule
+Gradient Boosting (HistGB / XGB / LGBM) & Corrección secuencial de residuos mediante árboles poco profundos. & Estructura secuencial de árboles aditivos y pesos de hojas. & \texttt{learning\_rate}, \texttt{max\_iter}, \texttt{max\_leaf\_nodes}, \texttt{l2\_regularization}. \\
+\midrule
+Deep Learning (PyTorch ResMLP / CNN) & Composiciones jerárquicas suaves de representaciones latentes. & Matrices de pesos $W^{(\ell)}$, sesgos $\mathbf{b}^{(\ell)}$ y escala/desplazamiento de normalización. & Profundidad, ancho oculto, \texttt{dropout}, \texttt{lr}, \texttt{weight\_decay}, \texttt{batch\_size}, épocas. \\
+\bottomrule
+\end{tabularx}
+\caption{Comparación estructural entre parámetros aprendidos ($\bm{\theta}$) e hiperparámetros de diseño y optimización ($\bm{\lambda}$) a lo largo del portafolio de arquitecturas.}
+\label{tab:familias}
+\end{table}
+
+% ==============================================================================
+% SECCIÓN 3: FASE 2 - PARÁMETROS VS. HIPERPARÁMETROS Y OPTIMIZACIÓN
+% ==============================================================================
+\section{Fase 2: Parámetros, Hiperparámetros y Optimización Sistemática}
+\label{sec:tuning}
+\secrule
+
+\begin{fasebox}[Fase 2: Separación Conceptual y Sintonización sin Sesgo de Selección]
+El estudiante debe demostrar dominio operacional sobre la jerarquía de dos niveles del aprendizaje estadístico: ajustar los \textbf{parámetros} $\bm{\theta}$ minimizando la pérdida empírica sobre el conjunto de entrenamiento y seleccionar los \textbf{hiperparámetros} $\bm{\lambda}$ maximizando la métrica de generalización en \textbf{Validación Cruzada ($k$-Fold CV)}.
+\end{fasebox}
+
+\subsection{Formulación Matemática: Parámetros \texorpdfstring{($\bm{\theta}$)}{(theta)} e Hiperparámetros \texorpdfstring{($\bm{\lambda}$)}{(lambda)}}
+Para una configuración fija de hiperparámetros $\bm{\lambda} \in \Lambda$ (que gobierna la capacidad, la regularización y la dinámica de optimización del algoritmo), el proceso de entrenamiento sobre un pliegue $\mathcal{D}_{\text{train}}^{(m)}$ determina los parámetros internos del modelo resolviendo:
+\begin{equation}
+    \hat{\bm{\theta}}^{(m)}(\bm{\lambda}) = \arg\min_{\bm{\theta}} \left[ \frac{1}{|\mathcal{D}_{\text{train}}^{(m)}|} \sum_{(\mathbf{x}_i, y_i) \in \mathcal{D}_{\text{train}}^{(m)}} \ell\big(f_{\bm{\theta}}(\mathbf{x}_i), y_i\big) + \Omega(\bm{\theta}; \bm{\lambda}) \right]
+\end{equation}
+donde $\ell(\cdot)$ es la función de pérdida (e.g., entropía cruzada en clasificación o error cuadrático en regresión) y $\Omega(\bm{\theta}; \bm{\lambda})$ es el término regularizador. Posteriormente, los hiperparámetros óptimos $\bm{\lambda}^*$ se determinan minimizando el riesgo estimado promedio sobre los $k$ pliegues de validación $\mathcal{D}_{\text{val}}^{(m)}$ (típicamente $k=5$):
+\begin{equation}
+    \bm{\lambda}^* = \arg\min_{\bm{\lambda} \in \Lambda} \; \frac{1}{k} \sum_{m=1}^{k} \mathcal{M}\!\left(f_{\hat{\bm{\theta}}^{(m)}(\bm{\lambda})},\, \mathcal{D}_{\text{val}}^{(m)}\right)
+\end{equation}
+
+\subsection{Optimización en Modelos Clásicos de Scikit-Learn}
+\begin{enumerate}
+    \item Construya un \texttt{Pipeline} completo para cada modelo clásico integrando la imputación, la codificación categórica y el escalado (ver Listing~\ref{lst:pipeline_cv}).
+    \item Ejecute una búsqueda sistemática de hiperparámetros (\texttt{GridSearchCV}, \texttt{RandomizedSearchCV} o búsqueda bayesiana con \texttt{Optuna}) con \texttt{StratifiedKFold(n\_splits=5)} en clasificación o \texttt{KFold(n\_splits=5)} en regresión.
+    \item \textbf{Curvas de Validación (\textit{Validation Curves}):} Para al menos dos familias clásicas, grafique la métrica promedio de \textit{Train} y \textit{Validation} ($\pm 1\sigma$) al variar un hiperparámetro crítico de complejidad (e.g., $C$ en regresión logística, \texttt{max\_depth} en Random Forest o \texttt{learning\_rate} en Boosting), diagnosticando visualmente los regímenes de subajuste y sobreajuste.
+\end{enumerate}
+
+\begin{lstlisting}[caption={Pipeline sin fuga de datos y optimizacion conjunta de hiperparametros con CV en Scikit-Learn.}, label={lst:pipeline_cv}]
+from sklearn.compose import ColumnTransformer
+from sklearn.pipeline import Pipeline
+from sklearn.impute import SimpleImputer
+from sklearn.preprocessing import RobustScaler, OneHotEncoder
+from sklearn.model_selection import StratifiedKFold, RandomizedSearchCV
+from sklearn.ensemble import HistGradientBoostingClassifier
+
+# 1. Preprocesamiento por tipo de variable (ajustado dentro de cada pliegue)
+preprocess = ColumnTransformer(
+    transformers=[
+        ("num", Pipeline([
+            ("imputer", SimpleImputer(strategy="median")),
+            ("scaler", RobustScaler()),
+        ]), num_cols),
+        ("cat", Pipeline([
+            ("imputer", SimpleImputer(strategy="most_frequent")),
+            ("ohe", OneHotEncoder(handle_unknown="ignore", sparse_output=False)),
+        ]), cat_cols),
+    ]
+)
+
+# 2. Pipeline completo + busqueda aleatoria con StratifiedKFold
+pipe_hgb = Pipeline([
+    ("prep", preprocess),
+    ("clf", HistGradientBoostingClassifier(random_state=42)),
+])
+
+param_dist = {
+    "clf__learning_rate": [0.02, 0.05, 0.1, 0.2],
+    "clf__max_leaf_nodes": [15, 31, 63],
+    "clf__min_samples_leaf": [10, 20, 50],
+    "clf__l2_regularization": [0.0, 0.1, 1.0, 10.0],
+}
+
+cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+search = RandomizedSearchCV(
+    pipe_hgb, param_distributions=param_dist, n_iter=20,
+    scoring="roc_auc", cv=cv, n_jobs=-1, random_state=42, return_train_score=True
+)
+search.fit(X_dev, y_dev)
+print("Mejores hiperparametros:", search.best_params_, "CV AUC:", search.best_score_)
+\end{lstlisting}
+
+\subsection{Optimización y Diagnóstico en PyTorch con TensorBoard}
+A diferencia de los estimadores cerrados de \texttt{scikit-learn}, las redes neuronales presentan paisajes de pérdida no convexos y alta sensibilidad al protocolo de optimización:
+\begin{enumerate}
+    \item \textbf{Arquitectura y Conteo de Parámetros:} Implemente su red neuronal (ver Listing~\ref{lst:pytorch_dl}) e imprima explícitamente el número total de parámetros entrenables $\sum |\bm{\theta}|$, comparándolo con la cantidad de datos disponibles ($N_{\text{train}}$).
+    \item \textbf{Optimizador, Regularización y Calendarización:} Entrene con \texttt{AdamW} (separando \textit{weight decay} del paso adaptativo), mediante un \textit{scheduler} (\texttt{ReduceLROnPlateau} o \texttt{CosineAnnealingLR}) y detención temprana (\textbf{Early Stopping}) sobre la pérdida del pliegue de validación.
+    \item \textbf{Instrumentación con TensorBoard:} Registre por época en \texttt{SummaryWriter} (o en un historial estructurado equivalente si ejecuta en entorno sin servidor TensorBoard) las curvas de \texttt{Loss/train}, \texttt{Loss/val}, la métrica objetivo de validación, la tasa de aprendizaje vigente y la norma global del gradiente $\|\nabla_{\bm{\theta}}\mathcal{L}\|_2$.
+    \item \textbf{Búsqueda de Hiperparámetros en DL:} Explore sistemáticamente al menos \textbf{3 configuraciones contrastantes} de hiperparámetros en PyTorch (por ejemplo: red compacta vs.\ red profunda con \texttt{Dropout}/\texttt{Weight Decay}, y dos tasas de aprendizaje $\eta$ o tamaños de lote \texttt{batch\_size}), evaluando la arquitectura ganadora bajo el mismo esquema exacto de $k$-Fold CV usado en los modelos clásicos para garantizar una comparación justa.
+\end{enumerate}
+
+\begin{lstlisting}[caption={Bloque PyTorch TabularResMLP, ciclo por mini-lotes con AdamW y registro en TensorBoard.}, label={lst:pytorch_dl}]
+import torch
+import torch.nn as nn
+from torch.utils.data import TensorDataset, DataLoader
+from torch.utils.tensorboard import SummaryWriter
+
+class ResBlock(nn.Module):
+    def __init__(self, dim, dropout=0.2):
+        super().__init__()
+        self.block = nn.Sequential(
+            nn.LayerNorm(dim),
+            nn.Linear(dim, dim),
+            nn.SiLU(),
+            nn.Dropout(dropout),
+            nn.Linear(dim, dim),
+            nn.Dropout(dropout),
+        )
+    def forward(self, x):
+        return x + self.block(x)
+
+class TabularResMLP(nn.Module):
+    def __init__(self, in_dim, hidden_dim=128, n_blocks=2, out_dim=1, dropout=0.2):
+        super().__init__()
+        self.stem = nn.Linear(in_dim, hidden_dim)
+        self.blocks = nn.Sequential(*[ResBlock(hidden_dim, dropout) for _ in range(n_blocks)])
+        self.head = nn.Sequential(nn.LayerNorm(hidden_dim), nn.SiLU(), nn.Linear(hidden_dim, out_dim))
+
+    def forward(self, x):
+        return self.head(self.blocks(self.stem(x)))
+
+# Ejemplo de ciclo de entrenamiento en un pliegue con Early Stopping y TensorBoard
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+model = TabularResMLP(in_dim=X_tr_proc.shape[1], hidden_dim=128, n_blocks=2, dropout=0.25).to(device)
+optimizer = torch.optim.AdamW(model.parameters(), lr=3e-3, weight_decay=1e-2)
+scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=80)
+criterion = nn.BCEWithLogitsLoss()  # O nn.MSELoss() para regresion
+writer = SummaryWriter(log_dir="runs/practico3_resmlp_fold0")
+
+best_val_loss, best_state, patience_ctr = float("inf"), None, 0
+for epoch in range(80):
+    model.train()
+    tr_loss = 0.0
+    for xb, yb in DataLoader(TensorDataset(X_tr_t, y_tr_t), batch_size=64, shuffle=True):
+        xb, yb = xb.to(device), yb.to(device)
+        optimizer.zero_grad()
+        loss = criterion(model(xb).squeeze(-1), yb)
+        loss.backward()
+        torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=2.0)
+        optimizer.step()
+        tr_loss += loss.item() * len(xb)
+    scheduler.step()
+
+    model.eval()
+    with torch.no_grad():
+        val_loss = criterion(model(X_va_t.to(device)).squeeze(-1), y_va_t.to(device)).item()
+    writer.add_scalars("Loss", {"train": tr_loss / len(X_tr_t), "val": val_loss}, epoch)
+    if val_loss < best_val_loss - 1e-4:
+        best_val_loss, best_state, patience_ctr = val_loss, {k: v.cpu() for k, v in model.state_dict().items()}, 0
+    else:
+        patience_ctr += 1
+        if patience_ctr >= 12:
+            break
+writer.close()
+\end{lstlisting}
+
+% ==============================================================================
+% SECCIÓN 4: FASE 3 - EVALUACIÓN COMPARATIVA DE MÉTRICAS E INTERPRETABILIDAD
+% ==============================================================================
+\section{Fase 3: Evaluación Comparativa de Métricas, Diagnósticos e Interpretabilidad}
+\label{sec:evaluacion}
+\secrule
+
+\begin{fasebox}[Fase 3: Comparación Rigurosa entre ML Clásico y Deep Learning]
+Una vez fijados los hiperparámetros óptimos de cada arquitectura mediante validación cruzada, evalúe todos los candidatos exactamente bajo el mismo protocolo sobre los pliegues de CV y, únicamente al final, sobre el conjunto \textbf{Test} retenido e intacto.
+\end{fasebox}
+
+\subsection{Protocolo de Métricas según Modalidad Elegida}
+\begin{itemize}
+    \item \textbf{Si eligió Modalidad A (Clasificación):}
+    \begin{enumerate}
+        \item Reporte \textit{Accuracy}, \textit{Precision}, \textit{Recall}, \textit{F1-Score} (macro y ponderado), \textbf{Matthews Correlation Coefficient (MCC)}, \textbf{ROC-AUC} y \textbf{PR-AUC} (especialmente informativa si hay desbalance de clases).
+        \item Genere matrices de confusión normalizadas para las mejores arquitecturas y discuta el costo disciplinar asimétrico entre \textbf{Falsos Positivos (Error Tipo I)} y \textbf{Falsos Negativos (Error Tipo II)}.
+        \item Grafique en una misma figura las \textbf{curvas ROC} y \textbf{Precision-Recall} superpuestas para los cuatro modelos candidatos, además de un \textbf{diagrama de calibración} (\textit{Reliability Diagram} + \textit{Brier Score} / \textit{Log-Loss}) para verificar si las probabilidades predichas son confiables.
+    \end{enumerate}
+    \item \textbf{Si eligió Modalidad B (Regresión):}
+    \begin{enumerate}
+        \item Reporte $\text{RMSE}$, $\text{MAE}$, $R^2$ y una métrica robusta a valores extremos como \textbf{NMAD} ($\sigma_{\text{NMAD}} = 1.4826 \times \text{mediana}(|r_i - \text{mediana}(r)|)$) o MAPE.
+        \item Grafique el diagrama de dispersión \textbf{Predicho vs.\ Observado} ($\hat{y}$ vs.\ $y$) con la recta identidad $y=\hat{y}$ y el gráfico de \textbf{residuos} ($r_i = y_i - \hat{y}_i$ vs.\ $\hat{y}_i$), analizando sesgos sistemáticos en los extremos, asimetría y heterocedasticidad.
+    \end{enumerate}
+\end{itemize}
+
+\subsection{Tabla Maestra Comparativa y Análisis Costo–Desempeño}
+Consolide el resultado completo del experimento en una tabla comparativa estructurada que incluya obligatoriamente para cada arquitectura:
+\begin{enumerate}
+    \item \textbf{Métrica principal en CV} (media $\pm$ desviación estándar a través de los $k$ pliegues) y diagrama de cajas (\textit{boxplot}) comparativo de los pliegues para juzgar si las diferencias superan la varianza muestral.
+    \item \textbf{Métrica final en el conjunto Test} (evaluada una sola vez por modelo) junto con la brecha de generalización (\textit{Train score} $-$ \textit{CV score}) como indicador cuantitativo de sobreajuste.
+    \item \textbf{Complejidad y eficiencia:} número de parámetros aprendibles o nodos totales, tiempo de entrenamiento (en segundos) y latencia de inferencia.
+    \item \textbf{Discusión crítica ML Tabular vs.\ Deep Learning:} Analice si la arquitectura neuronal superó o igualó a los ensambles de árboles (Boosting/Random Forest) en su problema específico, discutiendo el tamaño muestral $N$, la presencia de fronteras irregulares vs.\ suaves, y el costo de sintonización (cf.\ Grinsztajn et al., 2022).
+\end{enumerate}
+
+\subsection{Interpretabilidad y Análisis de Errores por Subpoblaciones}
+\begin{itemize}
+    \item Calcule la \textbf{Importancia por Permutación} (\texttt{sklearn.inspection.permutation\_importance}) sobre el conjunto de Test para el mejor modelo clásico y para la red neuronal de PyTorch (permite comparar en igualdad de condiciones modelos de árboles y redes neuronales), o utilice valores \textbf{SHAP}.
+    \item Compare si ambas familias coinciden en las 3–5 variables más influyentes y contraste estos resultados con las correlaciones descubiertas en el EDA del Práctico N° 2.
+    \item Realice un \textbf{análisis de errores}: inspeccione las 5 a 10 instancias peor predichas o con mayor pérdida en Test y verifique si se concentran en un rango extremo o en alguno de los \textit{clusters} latentes identificados en el Práctico N° 2.
+\end{itemize}
+
+% ==============================================================================
+% SECCIÓN 5: FASE 4 (OPCIONAL / BONUS)
+% ==============================================================================
+\section{Fase 4 (Opcional / Bonus +10 pts): Incertidumbre Epistémica en Deep Learning}
+\label{sec:bonus}
+\secrule
+
+\begin{tipbox}[Extensión Avanzada: Puente con Inferencia Bayesiana o Regresión Simbólica]
+Los estudiantes que deseen profundizar hacia el nivel de investigación visto al cierre del curso pueden optar por una de las siguientes dos extensiones:
+\begin{enumerate}
+    \item \textbf{Incertidumbre con MC Dropout o Deep Ensembles:} Ejecute $T=50$ pasadas estocásticas hacia adelante en su modelo PyTorch con \texttt{Dropout} activo en inferencia (\textit{Monte Carlo Dropout}) o entrene un ensamble de $M=5$ redes con semillas distintas. Reporte la dispersión predictiva $\sigma_{\text{pred}}(\mathbf{x}_i)$, verifique si los errores grandes ocurren donde la incertidumbre epistémica es mayor y compare conceptualmente este enfoque con la inferencia MCMC del Práctico N° 2.
+    \item \textbf{Destilación Simbólica de Residuos o Relaciones:} Ajuste una expresión simbólica interpretable (regresión simbólica parsimoniosa o frontera de Pareto complejidad--error) sobre la relación dominante aprendida por su red neuronal o sobre sus residuos, siguiendo la metodología del cuaderno \texttt{DeepLearning4.ipynb}.
+\end{enumerate}
+\end{tipbox}
+
+% ==============================================================================
+% SECCIÓN 6: ENTREGABLES Y ESTRUCTURA DEL INFORME
+% ==============================================================================
+\section{Formato de Entrega y Estructura del Trabajo}
+\label{sec:entregables}
+\secrule
+
+El trabajo práctico se entregará a través del repositorio institucional o plataforma del curso en los siguientes dos formatos obligatorios:
+\begin{enumerate}
+    \item \textbf{Jupyter Notebook reproducible (\texttt{.ipynb}):}
+    \begin{itemize}
+        \item Código modular, ejecutable de punta a punta (\textit{Restart \& Run All}) sin errores, con semillas aleatorias fijadas en \texttt{numpy}, \texttt{scikit-learn} y \texttt{torch} (\texttt{seed=42}).
+        \item Capturas o gráficos exportados directamente desde los registros de entrenamiento (TensorBoard / métricas por época) y figuras auto-contenidas con unidades y leyendas claras.
+    \end{itemize}
+    \item \textbf{Informe Técnico / Reporte Académico (PDF de 8 a 12 páginas):}
+    Estructurado bajo formato científico estándar:
+    \begin{itemize}
+        \item \textbf{1. Continuidad, Objetivo y Protocolo Experimental:} Definición de la variable objetivo $y$, justificación disciplinar, estrategia de partición y prevención de \textit{data leakage}.
+        \item \textbf{2. Diseño de Arquitecturas:} Descripción del portafolio de al menos 4 modelos (incluyendo la arquitectura detallada de PyTorch y conteo de parámetros).
+        \item \textbf{3. Optimización de Parámetros e Hiperparámetros:} Búsquedas en CV, curvas de validación, curvas de entrenamiento/validación de PyTorch (TensorBoard) y efecto de la regularización.
+        \item \textbf{4. Comparación de Métricas y Diagnósticos:} Tabla maestra comparativa (CV vs.\ Test), gráficos ROC/PR/calibración o predicho vs.\ observado y residuos, más discusión de eficiencia computacional.
+        \item \textbf{5. Interpretabilidad, Análisis de Errores y Conclusiones:} Importancia por permutación/SHAP, análisis de fallos (enlazado con clusters del Práctico N° 2 cuando corresponda), limitaciones y selección justificada del modelo final.
+    \end{itemize}
+\end{enumerate}
+
+% ==============================================================================
+% SECCIÓN 7: RÚBRICA DE EVALUACIÓN
+% ==============================================================================
+\newpage
+\section{Rúbrica de Evaluación Ponderada}
+\label{sec:rubrica}
+\secrule
+
+La calificación final del Trabajo Práctico N° 3 se regirá por una escala de \textbf{100 puntos base} (más hasta \textbf{10 puntos bonus} opcionales):
+
+\begin{table}[ht!]
+\centering\small
+\renewcommand{\arraystretch}{1.15}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{3.5cm} >{\raggedright\arraybackslash}X c}
+\toprule
+\textbf{Componente / Fase} & \textbf{Criterios de Evaluación y Rigor Metodológico} & \textbf{Puntaje} \\
+\midrule
+\textbf{1. Problema, Target \& Protocolo Anti-Leakage} &
+Elección coherente y justificada de la variable objetivo $y$ (clasificación o regresión). Partición Train/Test intacta y encapsulamiento total de transformaciones dentro de \texttt{Pipeline}/\texttt{ColumnTransformer}. & \textbf{15 pts} \\
+\midrule
+\textbf{2. Portafolio de Arquitecturas (ML + DL)} &
+Implementación funcional de al menos 4 familias distintas: Baseline lineal regularizado, Bagging/Kernel, Gradient Boosting y arquitectura PyTorch bien diseñada (con conteo de parámetros). & \textbf{20 pts} \\
+\midrule
+\textbf{3. Parámetros, Hiperparámetros \& TensorBoard} &
+Distinción explícita entre $\bm{\theta}$ y $\bm{\lambda}$. Búsqueda sistemática por CV (\texttt{Grid/RandomizedSearchCV}), curvas de validación, ajuste de hiperparámetros en PyTorch con \textit{Early Stopping} y monitoreo en TensorBoard. & \textbf{25 pts} \\
+\midrule
+\textbf{4. Evaluación Comparativa \& Interpretabilidad} &
+Tabla maestra (CV $\mu\pm\sigma$, Test, brecha de ajuste, tiempos), métricas completas y gráficos diagnósticos (ROC/PR/calibración o residuos), análisis crítico ML vs.\ DL, importancia por permutación y errores. & \textbf{25 pts} \\
+\midrule
+\textbf{5. Calidad del Informe \& Reproducibilidad} &
+Redacción científica clara y concisa, figuras auto-contenidas, código limpio y notebook reproducible de punta a punta con semillas fijadas. & \textbf{15 pts} \\
+\midrule
+\textbf{6. Bonus (Opcional): Incertidumbre / Simbólico} &
+Cuantificación de incertidumbre mediante MC Dropout / Deep Ensembles (contrastada con MCMC) o destilación simbólica interpretable sobre residuos. & \textbf{+10 pts} \\
+\bottomrule
+\textbf{TOTAL BASE} & & \textbf{100 pts} \\
+\bottomrule
+\end{tabularx}
+\caption{Rúbrica detallada de calificación para el Trabajo Práctico N° 3.}
+\label{tab:rubrica3}
+\end{table}
+
+% ==============================================================================
+% SECCIÓN 8: REFERENCIAS Y BIBLIOGRAFÍA RECOMENDADA
+% ==============================================================================
+\section{Bibliografía y Referencias Recomendadas}
+\label{sec:bibliografia}
+\secrule
+
+\begin{enumerate}
+    \item \textbf{Ivezi\'{c}, \v{Z}., Connolly, A. J., VanderPlas, J. T., \& Gray, A.} (2014). \textit{Statistics, Data Mining, and Machine Learning in Astronomy: A Practical Python Guide for the Analysis of Survey Data}. Princeton University Press.
+    \item \textbf{Hastie, T., Tibshirani, R., \& Friedman, J.} (2009). \textit{The Elements of Statistical Learning: Data Mining, Inference, and Prediction} (2nd ed.). Springer.
+    \item \textbf{Goodfellow, I., Bengio, Y., \& Courville, A.} (2016). \textit{Deep Learning}. MIT Press. \url{https://www.deeplearningbook.org/}
+    \item \textbf{Bishop, C. M., \& Bishop, H.} (2024). \textit{Deep Learning: Foundations and Concepts}. Springer.
+    \item \textbf{Grinsztajn, L., Oyallon, E., \& Varoquaux, G.} (2022). \textit{Why do tree-based models still outperform deep learning on typical tabular data?} Advances in Neural Information Processing Systems (NeurIPS), 35.
+    \item \textbf{Raschka, S.} (2020). \textit{Model Evaluation, Model Selection, and Algorithm Selection in Machine Learning}. arXiv preprint \href{https://arxiv.org/abs/1811.12808}{arXiv:1811.12808}.
+    \item \textbf{Documentación Oficial:} \href{https://scikit-learn.org/stable/}{Scikit-Learn}, \href{https://pytorch.org/docs/stable/}{PyTorch} y \href{https://www.tensorflow.org/tensorboard}{TensorBoard}.
+\end{enumerate}
+
+\end{document}
